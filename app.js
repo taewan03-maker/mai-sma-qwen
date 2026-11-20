@@ -1,4 +1,4 @@
-import {backend} from './browser-engine.js';
+import {backend} from './browser-engine.js?v=4.0.2';
 'use strict';
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const prompts=['발전기 배기가스 온도가 높아 어떻게 해야 해?','발전기 터보차저 세척 시 엔진 부하와 온도는?','발전기 연료 분사밸브 노즐은 어떻게 점검했어?','주기관 기동 공기밸브 점검 기록을 찾아줘','보일러 안전밸브 점검 사례를 알려줘','청정기에서 진동이 발생한 정비 기록이 있어?','계선 윈치 유압 스트레이너 막힘 기록을 찾아줘','구명정 진수장치 정비 기록을 알려줘','선박별 정비 문서 건수를 보여줘','발전기 정비 작업 라인은 호기별로 몇 건인가?','부품 소모 기록이 있는 문서 비율은?','2025년 부품 총 소모 수량은?','직급별 정비 문서 건수를 보여줘','정비 작업 시간 평균을 구할 수 있어?'];
@@ -40,7 +40,7 @@ async function ask(q){
  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
  try{
   msg.result=await backend.chat(q,history,name=>$('#stageName').textContent=name,controller.signal);
- }catch(e){if(e.name!=='AbortError')msg.error=e.message;}
+ }catch(e){if(!controller.signal.aborted)msg.error=e?.message||String(e)||'모델 응답 처리 중 오류가 발생했습니다. 다시 시도해 주세요.';}
  finally{if(run===epoch){idle();save();draw();$('#question').focus();}}
 }
 $('#suggestions').innerHTML=prompts.map((p,i)=>`<button data-prompt="${i}" title="${esc(p)}"><span>${esc(p)}</span></button>`).join('');
